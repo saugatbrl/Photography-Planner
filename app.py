@@ -1,10 +1,11 @@
+import os
 from flask import Flask, render_template, request
 import requests
 from datetime import datetime, timedelta
 
 app = Flask(__name__)
 
-API_KEY = "36357bbee22b979b263638d4b0eb06a9"
+API_KEY = os.environ.get("API_KEY")
 
 
 def get_coordinates(location):

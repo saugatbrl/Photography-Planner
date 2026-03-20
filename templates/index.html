@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Photography Planner</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="{% if report %}{{ report.theme }}{% else %}default{% endif %}">
+    <div class="page-wrapper">
+        <div class="container">
+            <header class="hero">
+                <h1>Professional Photography Planner</h1>
+                <p>Check weather, light windows, and photography suitability for outdoor sessions.</p>
+            </header>
+
+            <section class="search-card">
+                <form method="POST">
+                    <label for="location">Enter location</label>
+                    <div class="form-row">
+                        <input
+                            type="text"
+                            id="location"
+                            name="location"
+                            placeholder="Sydney, Parramatta or postcode"
+                            value="{{ location }}"
+                            required
+                        >
+                        <button type="submit">Check Conditions</button>
+                    </div>
+                </form>
+            </section>
+
+            {% if error %}
+                <div class="message error">{{ error }}</div>
+            {% endif %}
+
+            {% if report %}
+                <section class="summary-grid">
+                    <div class="card score-card">
+                        <h2>{{ report.location_label }}</h2>
+                        <div class="big-score">{{ report.overall_score }}/100</div>
+                        <p class="rating">{{ report.overall_rating }}</p>
+                        <p>{{ report.summary }}</p>
+                        <p><strong>Why:</strong> {{ report.why }}</p>
+                    </div>
+
+                    <div class="card">
+                        <h3>Current Conditions</h3>
+                        <ul class="info-list">
+                            <li><strong>Temperature:</strong> {{ report.current_temp }} °C</li>
+                            <li><strong>Condition:</strong> {{ report.current_condition }}</li>
+                            <li><strong>Humidity:</strong> {{ report.current_humidity }}%</li>
+                            <li><strong>Wind:</strong> {{ report.current_wind }} m/s</li>
+                            <li><strong>Sunrise:</strong> {{ report.sunrise }}</li>
+                            <li><strong>Sunset:</strong> {{ report.sunset }}</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section class="card">
+                    <h3>Photography Light Windows</h3>
+                    <div class="window-grid">
+                        <div class="window-box">
+                            <h4>Blue Hour (Morning)</h4>
+                            <p>{{ report.blue_morning }}</p>
+                        </div>
+                        <div class="window-box">
+                            <h4>Golden Hour (Morning)</h4>
+                            <p>{{ report.golden_morning }}</p>
+                        </div>
+                        <div class="window-box">
+                            <h4>Golden Hour (Evening)</h4>
+                            <p>{{ report.golden_evening }}</p>
+                        </div>
+                        <div class="window-box">
+                            <h4>Blue Hour (Evening)</h4>
+                            <p>{{ report.blue_evening }}</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="card">
+                    <h3>Best Recommended Time Windows</h3>
+                    <div class="best-slots">
+                        {% for slot in report.best_slots %}
+                            <div class="slot-card">
+                                <h4>{{ slot.time }}</h4>
+                                <p><strong>Score:</strong> {{ slot.score }}/100 ({{ slot.rating }})</p>
+                                <p><strong>Condition:</strong> {{ slot.condition }}</p>
+                                <p><strong>Temp:</strong> {{ slot.temp }} °C</p>
+                                <p><strong>Cloud:</strong> {{ slot.cloud }}%</p>
+                                <p><strong>Wind:</strong> {{ slot.wind }} m/s</p>
+                                <p>{{ slot.explanation }}</p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </section>
+
+                <section class="card">
+                    <h3>Next 24 Hours Forecast Analysis</h3>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Time</th>
+                                    <th>Condition</th>
+                                    <th>Temp</th>
+                                    <th>Cloud</th>
+                                    <th>Wind</th>
+                                    <th>Score</th>
+                                    <th>Rating</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in report.forecast_items %}
+                                    <tr>
+                                        <td>{{ item.time }}</td>
+                                        <td>{{ item.condition }}</td>
+                                        <td>{{ item.temp }} °C</td>
+                                        <td>{{ item.cloud }}%</td>
+                                        <td>{{ item.wind }} m/s</td>
+                                        <td>{{ item.score }}/100</td>
+                                        <td>{{ item.rating }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
